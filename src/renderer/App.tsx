@@ -135,13 +135,18 @@ const Mesure = () => {
 		);
 	};
 	const Simulation = () => {
-		const [value, setValue] = useState('');
-
+		const [pointsMesure, setPointsMesure] = useState(0)
+		const ptsTTH=[760,1000,1100,1210,1270]
 		useEffect(() => {
 			window.electron.ipcRenderer.on('ecritureCalys', (arg) => {
 				// eslint-disable-next-line no-console
 				console.log('arg from ecritureCalys');
 				console.log(arg);
+			});
+			document.addEventListener("keydown", (event)=>{
+				if (event.key=="ArrowRight") {
+					setPointsMesure((pointsMesure)=>pointsMesure+1)
+				}
 			});
 		}, []);
 
@@ -162,6 +167,8 @@ const Mesure = () => {
 						</button>
 					))}
 				</div>
+{ptsTTH[pointsMesure]}
+
 			</div>
 		);
 	};
