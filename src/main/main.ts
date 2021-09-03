@@ -21,30 +21,32 @@ const Readline = require('@serialport/parser-readline');
 const serialport = require('serialport');
 console.log(serialport);
 const XLSX = require('xlsx');
-  var workbook = XLSX.readFile('C:\\Users\\ludovic.vachon\\electron\\interventions\\src\\fichierTransfert.xls');
-  /* DO SOMETHING WITH workbook HERE */
+var workbook = XLSX.readFile(
+	'C:\\Users\\ludovic.vachon\\electron\\interventions\\src\\fichierTransfert.xls'
+);
+/* DO SOMETHING WITH workbook HERE */
 
-  // get first sheet
-  let first_sheet_name = workbook.SheetNames[0];
-  let worksheet = workbook.Sheets[first_sheet_name];
+// get first sheet
+let first_sheet_name = workbook.SheetNames[0];
+let worksheet = workbook.Sheets[first_sheet_name];
 
-  // read value in D4
-  let cell = worksheet['A1'].v;
-  console.log(cell)
+// read value in D4
+let cell = worksheet['A1'].v;
+console.log(cell);
 export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
+	constructor() {
+		log.transports.file.level = 'info';
+		autoUpdater.logger = log;
+		autoUpdater.checkForUpdatesAndNotify();
+	}
 }
 
 let mainWindow: BrowserWindow | null = null;
 async function listSerialPorts() {
-  await serialport.list().then((ports, err) => {
-    if (ports) console.log(ports);
-    if (err) console.log(err);
-  });
+	await serialport.list().then((ports, err) => {
+		if (ports) console.log(ports);
+		if (err) console.log(err);
+	});
 }
 listSerialPorts();
 const port = new serialport('COM11', { baudRate: 115200 });
@@ -53,121 +55,131 @@ console.log('rem');
 port.write('rem\n');
 
 ipcMain.on('lectureCalys', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log('#######arg main lectureCalys');
-  console.log(arg);
-  console.log(msgTemplate(arg));
-  // event.reply('ipc-example', msgTemplate('lolo'));
-  // event.reply('ipc-example', 'couool');
-  if (arg == 'meas') port.write('meas?\n');
-  if (arg == 'measCont') {
+	const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+	console.log('#######arg main lectureCalys');
+	console.log(arg);
+	console.log(msgTemplate(arg));
+	// event.reply('ipc-example', msgTemplate('lolo'));
+	// event.reply('ipc-example', 'couool');
 
-}
+	// Pour mesurer la CSF
+	// if (arg == 'meas') port.write('MEAS:RJUN?\n');
+	if (arg == 'meas') port.write('MEAS?\n');
+	if (arg == 'measCont') {
+	}
 });
 ipcMain.on('ecritureCalys', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log('#######arg main ecritureCalys');
-  console.log(arg);
-  console.log(msgTemplate(arg));
-  event.reply('ecritureCalys', 'couool');
-
+	const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+	console.log('#######arg main ecritureCalys');
+	console.log(arg);
+	console.log(msgTemplate(arg));
+	event.reply('ecritureCalys', 'couool');
+	// shell.openPath('C:\\Users\\ludovic.vachon\\electron\\serial\\electron-serialport\\vide v2.0.xls');
+});
+ipcMain.on('xls', async (event, arg) => {
+	console.log('#######arg main ecritureCalys');
+	console.log(arg);
+	event.reply('xls', 'couool');
+	shell.openPath(
+		'C:\\Users\\ludovic.vachon\\electron\\serial\\electron-serialport\\vide v2.0.xls'
+	);
 });
 
 lineStream.on('data', (data) => {
-  console.log(' data from linestream');
-  console.log(data);
-  mainWindow.webContents.send('lectureCalys', data);
-  // mainWindow.webContents.send('asynchronous-message', data);
-  // dataRecu=data
-  // event.reply('ipc-example', data);
-  // console.log(JSON.stringify(mainWindow))
+	console.log(' data from linestream');
+	console.log(data);
+	mainWindow.webContents.send('lectureCalys', data);
+	// mainWindow.webContents.send('asynchronous-message', data);
+	// dataRecu=data
+	// event.reply('ipc-example', data);
+	// console.log(JSON.stringify(mainWindow))
 });
 
 if (process.env.NODE_ENV === 'production') {
-  const sourceMapSupport = require('source-map-support');
-  sourceMapSupport.install();
+	const sourceMapSupport = require('source-map-support');
+	sourceMapSupport.install();
 }
 
 const isDevelopment =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+	process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDevelopment) {
-  require('electron-debug')();
+	require('electron-debug')();
 }
 
 const installExtensions = async () => {
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
+	const installer = require('electron-devtools-installer');
+	const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+	const extensions = ['REACT_DEVELOPER_TOOLS'];
 
-  return installer
-    .default(
-      extensions.map((name) => installer[name]),
-      forceDownload
-    )
-    .catch(console.log);
+	return installer
+		.default(
+			extensions.map((name) => installer[name]),
+			forceDownload
+		)
+		.catch(console.log);
 };
 
 const createWindow = async () => {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.DEBUG_PROD === 'true'
-  ) {
-    await installExtensions();
-  }
+	if (
+		process.env.NODE_ENV === 'development' ||
+		process.env.DEBUG_PROD === 'true'
+	) {
+		await installExtensions();
+	}
 
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
+	const RESOURCES_PATH = app.isPackaged
+		? path.join(process.resourcesPath, 'assets')
+		: path.join(__dirname, '../../assets');
 
-  const getAssetPath = (...paths: string[]): string => {
-    return path.join(RESOURCES_PATH, ...paths);
-  };
+	const getAssetPath = (...paths: string[]): string => {
+		return path.join(RESOURCES_PATH, ...paths);
+	};
 
-  mainWindow = new BrowserWindow({
-    show: false,
-    width: 1024,
-    height: 728,
-    icon: getAssetPath('icon.png'),
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-    },
-  });
+	mainWindow = new BrowserWindow({
+		show: false,
+		width: 1024,
+		height: 728,
+		icon: getAssetPath('icon.png'),
+		webPreferences: {
+			preload: path.join(__dirname, 'preload.js'),
+		},
+	});
 
-  mainWindow.loadURL(resolveHtmlPath('index.html'));
+	mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  // @TODO: Use 'ready-to-show' event
-  //        https://github.com/electron/electron/blob/main/docs/api/browser-window.md#using-ready-to-show-event
-  mainWindow.webContents.on('did-finish-load', () => {
-    if (!mainWindow) {
-      throw new Error('"mainWindow" is not defined');
-    }
-    if (process.env.START_MINIMIZED) {
-      mainWindow.minimize();
-    } else {
-      mainWindow.show();
-      mainWindow.focus();
-    }
-  });
+	// @TODO: Use 'ready-to-show' event
+	//        https://github.com/electron/electron/blob/main/docs/api/browser-window.md#using-ready-to-show-event
+	mainWindow.webContents.on('did-finish-load', () => {
+		if (!mainWindow) {
+			throw new Error('"mainWindow" is not defined');
+		}
+		if (process.env.START_MINIMIZED) {
+			mainWindow.minimize();
+		} else {
+			mainWindow.show();
+			mainWindow.focus();
+		}
+	});
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+	mainWindow.on('closed', () => {
+		mainWindow = null;
+	});
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
+	const menuBuilder = new MenuBuilder(mainWindow);
+	menuBuilder.buildMenu();
 
-  // Open urls in the user's browser
-  mainWindow.webContents.on('new-window', (event, url) => {
-    event.preventDefault();
-    shell.openExternal(url);
-  });
+	// Open urls in the user's browser
+	mainWindow.webContents.on('new-window', (event, url) => {
+		event.preventDefault();
+		shell.openExternal(url);
+	});
 
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
-  // const contents = mainWindow.webContents
-  // console.log(contents)
+	// Remove this if your app does not use auto updates
+	// eslint-disable-next-line
+	new AppUpdater();
+	// const contents = mainWindow.webContents
+	// console.log(contents)
 };
 
 /**
@@ -175,19 +187,19 @@ const createWindow = async () => {
  */
 
 app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+	// Respect the OSX convention of having the application in memory even
+	// after all windows have been closed
+	if (process.platform !== 'darwin') {
+		app.quit();
+	}
 });
 
 app.whenReady().then(createWindow).catch(console.log);
 
 app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow();
+	// On macOS it's common to re-create a window in the app when the
+	// dock icon is clicked and there are no other windows open.
+	if (mainWindow === null) createWindow();
 });
 
 // mainWindow.webContents.send('asynchronous-message', {'SAVED': 'File Saved'});

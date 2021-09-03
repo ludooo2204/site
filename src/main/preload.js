@@ -6,8 +6,9 @@ contextBridge.exposeInMainWorld('electron', {
       ipcRenderer.send('lectureCalys', 'meas');
 
     },
-      measCont() {
-      ipcRenderer.send('lectureCalys', 'measCont');
+      ecriture(four) {
+		  console.log(four)
+      ipcRenderer.send('ecritureCalys', four);
 
     },
     meas2() {
