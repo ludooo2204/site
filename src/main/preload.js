@@ -2,15 +2,16 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
-    myPing() {
-      ipcRenderer.send('ipc-example', 'ping');
+      meas() {
+      ipcRenderer.send('lectureCalys', 'meas');
+
     },
-    meas() {
-      ipcRenderer.send('ipc-example', 'meas');
+      measCont() {
+      ipcRenderer.send('lectureCalys', 'measCont');
 
     },
     meas2() {
-      ipcRenderer.send('asynchronous-message', 'meas2');
+      ipcRenderer.send('ecritureCalys', 'meas2');
 
     },
     on(channel, func) {
@@ -21,11 +22,11 @@ contextBridge.exposeInMainWorld('electron', {
       // }
     },
     once(channel, func) {
-      const validChannels = ['ipc-example'];
-      if (validChannels.includes(channel)) {
+      // const validChannels = ['ipc-example'];
+      // if (validChannels.includes(channel)) {
         // Deliberately strip event as it includes `sender`
         ipcRenderer.once(channel, (event, ...args) => func(...args));
       }
-    },
+    // },
   },
 });

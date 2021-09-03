@@ -20,6 +20,17 @@ import { resolveHtmlPath } from './util';
 const Readline = require('@serialport/parser-readline');
 const serialport = require('serialport');
 console.log(serialport);
+const XLSX = require('xlsx');
+  var workbook = XLSX.readFile('C:\\Users\\ludovic.vachon\\electron\\interventions\\src\\fichierTransfert.xls');
+  /* DO SOMETHING WITH workbook HERE */
+
+  // get first sheet
+  let first_sheet_name = workbook.SheetNames[0];
+  let worksheet = workbook.Sheets[first_sheet_name];
+
+  // read value in D4
+  let cell = worksheet['A1'].v;
+  console.log(cell)
 export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -40,33 +51,34 @@ const port = new serialport('COM11', { baudRate: 115200 });
 const lineStream = port.pipe(new Readline());
 console.log('rem');
 port.write('rem\n');
-let dataRecu=""
-ipcMain.on('ipc-example', async (event, arg) => {
+
+ipcMain.on('lectureCalys', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log('#######arg main ipc-example');
+  console.log('#######arg main lectureCalys');
   console.log(arg);
   console.log(msgTemplate(arg));
   // event.reply('ipc-example', msgTemplate('lolo'));
   // event.reply('ipc-example', 'couool');
   if (arg == 'meas') port.write('meas?\n');
+  if (arg == 'measCont') {
+
+}
+});
+ipcMain.on('ecritureCalys', async (event, arg) => {
+  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+  console.log('#######arg main ecritureCalys');
+  console.log(arg);
+  console.log(msgTemplate(arg));
+  event.reply('ecritureCalys', 'couool');
 
 });
-// ipcMain.on('asynchronous-message', async (event, arg) => {
-//   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-//   console.log('#######arg main asynchronous-message');
-//   console.log(arg);
-//   console.log(msgTemplate(arg));
-//   // event.reply('ipc-example', msgTemplate('lolo'));
-//   // event.reply('ipc-example', 'couool');
-//   if (arg == 'meas') port.write('meas?\n');
-
-// });
 
 lineStream.on('data', (data) => {
   console.log(' data from linestream');
   console.log(data);
-  mainWindow.webContents.send('asynchronous-message', data);
-// dataRecu=data
+  mainWindow.webContents.send('lectureCalys', data);
+  // mainWindow.webContents.send('asynchronous-message', data);
+  // dataRecu=data
   // event.reply('ipc-example', data);
   // console.log(JSON.stringify(mainWindow))
 });
@@ -135,7 +147,6 @@ const createWindow = async () => {
     } else {
       mainWindow.show();
       mainWindow.focus();
-
     }
   });
 
@@ -156,10 +167,8 @@ const createWindow = async () => {
   // eslint-disable-next-line
   new AppUpdater();
   // const contents = mainWindow.webContents
-// console.log(contents)
-
+  // console.log(contents)
 };
-
 
 /**
  * Add event listeners...
@@ -179,8 +188,6 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
-
 });
 
 // mainWindow.webContents.send('asynchronous-message', {'SAVED': 'File Saved'});
-
