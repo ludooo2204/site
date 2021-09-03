@@ -26,7 +26,7 @@ const Hello = () => {
         <img width="200px" alt="icon" src={icon} />
       </div>
       <h1>electron-react-boilerplate</h1>
-      <h3>{value}</h3>
+      <h2>{value}</h2>
       <div className="Hello">
         <button
           type="button"
