@@ -72,9 +72,11 @@ ipcMain.on('lectureCalys', async (event, arg) => {
 ipcMain.on('ecritureCalys', async (event, arg) => {
 	const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
 	console.log('#######arg main ecritureCalys');
-	console.log(arg);
+	console.log('=='+arg+'===');
 	console.log(msgTemplate(arg));
 	event.reply('ecritureCalys', 'couool');
+	port.write('SOUR '+arg+'\n')
+	// port.write('SOUR 900\n')
 	// shell.openPath('C:\\Users\\ludovic.vachon\\electron\\serial\\electron-serialport\\vide v2.0.xls');
 });
 ipcMain.on('xls', async (event, arg) => {

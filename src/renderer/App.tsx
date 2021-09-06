@@ -8,124 +8,13 @@ import { Line } from 'react-chartjs-2';
 import { arrayExpression } from '@babel/types';
 import regression from 'regression';
 import { defaults } from 'react-chartjs-2';
-
+import  GestionEtalons  from './components/GestionEtalons';
 // Disable animating charts by default.
 defaults.animation = false;
 
 const Mesure = () => {
 	const [domaine, setDomaine] = useState(null);
-	const [dataEtalon, setDataEtalon] = useState(null);
-	const [dataChart, setDataChart] = useState();
 
-	let dataForChart, optionsForChart;
-	if (dataChart) {
-		dataForChart = {
-			labels: dataChart[0],
-			// labels: [0, 1, 2, 3, 4, 5],
-			datasets: [
-				{
-					label: 'ecart Etalonnage',
-					data: dataChart[1],
-					// data: [0, 1, 2, 3, 4, 5],
-					fill: false,
-					backgroundColor: '#070913',
-					borderColor: 'rgba(00, 99, 132, 0.8)',
-				},
-				{
-					label: 'Ecart après modélisation',
-					data: dataChart[2],
-					// data: [0, 1, 2, 3, 4, 5],
-					fill: false,
-					backgroundColor: '#e61c1c',
-					borderColor: '#da232ccc',
-				},
-			],
-		};
-
-		optionsForChart = {
-			scales: {
-				y:
-					{
-						max:-10,
-						min:-50,
-						ticks: {
-							beginAtZero: false,
-							max: 50,
-							min: -50,
-						},
-					},
-
-			},
-		};
-	}
-
-	useEffect(() => {
-		fetch('http://localhost/API_test/get.php')
-			.then((reponse) => reponse.json())
-			.then((reponse) => {
-				reponse.forEach((element) => {
-					if (element.id == 10) {
-						console.log(element);
-						setDataEtalon(JSON.parse(element.ptsEtalonnage));
-					} // if (element.id==12)				console.log(element.ptsEtalonnage);
-				});
-			});
-	}, []);
-
-	useEffect(() => {
-		if (dataEtalon) {
-			console.log(dataEtalon);
-			let dataParsedForRegression = [];
-			for (let i = 0; i < dataEtalon.appareil.length; i++) {
-				dataParsedForRegression.push([
-					Math.log10(dataEtalon.appareil[i]),
-					Math.log10(dataEtalon.reference[i]),
-				]);
-			}
-			// console.log(dataParsedForRegression);
-			// const resultat = regression.linear(dataParsedForRegression,{precision:10});
-			const resultat = regression.polynomial(dataParsedForRegression, {
-				order: 4,
-				precision: 10,
-			});
-			console.log(resultat);
-			console.log(resultat.points);
-
-			let erreurCumulé = 0;
-			let dataForChartTemp = [[], [], []];
-			for (const iterator of dataParsedForRegression) {
-				// console.log(iterator);
-				let appareilValue = Math.pow(10, iterator[0]);
-				let referenceValue = Math.pow(10, iterator[1]);
-				let appareilCorrigé = Math.pow(
-					10,
-					resultat.predict(iterator[0])[1]
-				);
-				// console.log(appareilValue);
-				dataForChartTemp[0].push(appareilValue);
-				dataForChartTemp[1].push(
-					((appareilValue - referenceValue) * 100) / referenceValue
-				);
-				dataForChartTemp[2].push(
-					((appareilValue - appareilCorrigé) * 100) / appareilCorrigé
-				);
-				console.log(referenceValue);
-				console.log(appareilCorrigé);
-				const erreurRelativeEtalonnage =
-					((referenceValue - appareilCorrigé) * 100) / referenceValue;
-				console.log(erreurRelativeEtalonnage, ' %');
-				erreurCumulé +=
-					erreurRelativeEtalonnage * erreurRelativeEtalonnage;
-			}
-			console.log(
-				'erreur de modelisation relative cumulé ',
-				Math.sqrt(erreurCumulé / dataParsedForRegression.length)
-			);
-			console.log('R2 ', resultat.r2);
-			console.log(dataForChartTemp);
-			setDataChart(dataForChartTemp);
-		}
-	}, [dataEtalon]);
 	const MesureCalys = () => {
 		const [value, setValue] = useState('');
 		const [valueArray, setValueArray] = useState([]);
@@ -260,7 +149,9 @@ const Mesure = () => {
 				}
 			});
 		}, []);
-
+		useEffect(() => {
+			window.electron.ipcRenderer.ecriture(ptsTTH[pointsMesure]);
+		}, [pointsMesure]);
 		return (
 			<div>
 				<div className="Hello">
@@ -313,14 +204,6 @@ const Mesure = () => {
 			<h1>{domaine}</h1>
 			{domaine == 'mesure' ? <MesureCalys /> : null}
 			{domaine == 'simulation' ? <Simulation /> : null}
-			{JSON.stringify(dataEtalon)}
-			<div style={{ background: '#eceeed76' }}>
-				<Line
-					data={dataForChart}
-					options={optionsForChart}
-					redraw={false}
-				/>
-			</div>
 		</div>
 	);
 };
@@ -352,7 +235,7 @@ export default function App() {
 							<Link to="/mesure">MESURE</Link>
 						</li>
 						<li>
-							<Link to="/users">Users</Link>
+							<Link to="/gestionEtalons">Gestion des étalons</Link>
 						</li>
 					</ul>
 				</nav>
@@ -363,8 +246,8 @@ export default function App() {
 					<Route path="/mesure">
 						<Mesure />
 					</Route>
-					<Route path="/users">
-						<TestP />
+					<Route path="/gestionEtalons">
+						<GestionEtalons />
 					</Route>
 					<Route path="/">
 						<Home />
