@@ -253,7 +253,7 @@ export default class MenuBuilder {
               ],
       },
       {
-        label: 'Help',
+        label: 'Aide',
         submenu: [
           {
             label: 'Learn More',

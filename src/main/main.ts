@@ -44,6 +44,7 @@ export default class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 async function listSerialPorts() {
 	await serialport.list().then((ports, err) => {
+		console.log("listserialport")
 		if (ports) console.log(ports);
 		if (err) console.log(err);
 	});
@@ -143,6 +144,7 @@ const createWindow = async () => {
 		icon: getAssetPath('icon.png'),
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
+
 		},
 	});
 
@@ -168,7 +170,6 @@ const createWindow = async () => {
 
 	const menuBuilder = new MenuBuilder(mainWindow);
 	menuBuilder.buildMenu();
-
 	// Open urls in the user's browser
 	mainWindow.webContents.on('new-window', (event, url) => {
 		event.preventDefault();

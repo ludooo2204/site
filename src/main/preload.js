@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld('electron', {
 
     },
     meas2() {
-      ipcRenderer.send('ecritureCalys', 'meas2');
+      ipcRenderer.send('xls');
 
     },
     on(channel, func) {
