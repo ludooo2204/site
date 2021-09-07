@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import regression from 'regression';
+import { comparer } from 'renderer/helpers/functionUtilitaire';
+import ImportationEtalonnage from './ImportationEtalonnage';
 
 const GestionEtalons = () => {
 	const [dataEtalon, setDataEtalon] = useState(null);
@@ -9,10 +11,17 @@ const GestionEtalons = () => {
 	const [domaineUnique, setDomaineUnique] = useState(null);
 	const [domaineChoisi, setDomaineChoisi] = useState('');
 	const [etalonChoisi, setEtalonChoisi] = useState('');
+	const [etalonnageChoisi, setEtalonnageChoisi] = useState(null);
+	const [index, setIndex] = useState(0);
+	const [importation, setImportation] = useState(false);
 	// const [etalonAChoisir, setEtalonAChoisir] = useState();
 
 	let dataForChart, optionsForChart;
 	if (dataChart) {
+		// console.log('dataChart', dataChart[1]);
+		// console.log('max ', Math.max(...dataChart[1]) + 10);
+		let maxChoisi = Math.max(...dataChart[1]) + 10;
+		let minChoisi = Math.min(...dataChart[1]) - 10;
 		dataForChart = {
 			labels: dataChart[0],
 			// labels: [0, 1, 2, 3, 4, 5],
@@ -22,8 +31,9 @@ const GestionEtalons = () => {
 					data: dataChart[1],
 					// data: [0, 1, 2, 3, 4, 5],
 					fill: false,
+					tension: 0.1,
 					backgroundColor: '#070913',
-					borderColor: 'rgba(00, 99, 132, 0.8)',
+					borderColor: '#070913',
 				},
 				{
 					label: 'Ecart après modélisation',
@@ -49,12 +59,12 @@ const GestionEtalons = () => {
 		optionsForChart = {
 			scales: {
 				y: {
-					max: -10,
-					min: -50,
+					max: maxChoisi,
+					min: minChoisi,
+					// max: -10,
+					// min: -50,
 					ticks: {
 						beginAtZero: false,
-						max: 50,
-						min: -50,
 					},
 				},
 				x: {
@@ -73,33 +83,55 @@ const GestionEtalons = () => {
 
 	let domaine_Unique = [];
 	useEffect(() => {
+		console.log('index change!');
+	}, [index]);
+	useEffect(() => {
 		fetch('http://localhost/API_test/get.php')
 			.then((reponse) => reponse.json())
 			.then((reponse) => {
 				console.log(reponse);
 				setDatasEtalons(reponse);
-				// const domaineFiltree = reponse.filter((e) => (e).domaine == 'VIDE');
-				// console.log(domaineFiltree)
 				domaine_Unique = [
 					...new Set(reponse.map((item) => item.domaine)),
 				];
 				console.log('domaineUnique', domaine_Unique);
 				setDomaineUnique(domaine_Unique);
-				reponse.forEach((element) => {
-					console.log(element);
-					if (element.id == 10) {
-						console.log(element);
-						setDataEtalon(element);
-					}
-				});
 			});
+		document.addEventListener('keydown', (e) => {
+			console.log('keydown');
+			if (e.key == 'ArrowRight') {
+				setIndex((index) => {
+					// if (index<2)	return index + 1;
+					// else return index
+					return index + 1;
+				});
+			}
+			if (e.key == 'ArrowLeft') {
+				console.log(index);
+				setIndex((index) => {
+					if (index > 0) return index - 1;
+					else return index;
+				});
+			}
+			// setEtalonnageChoisi(etalonnageAChoisirUnique[2])
+		});
 	}, []);
-
+	useEffect(() => {
+		console.log(index);
+		console.log(etalonnageAChoisirUnique);
+		if (
+			etalonnageAChoisirUnique &&
+			index < etalonnageAChoisirUnique.length
+		) {
+			// console.log('etalonnageAChoisirUnique', etalonnageAChoisirUnique);
+			setEtalonnageChoisi(etalonnageAChoisirUnique[index]);
+		}
+	}, [index]);
 	useEffect(() => {
 		if (dataEtalon) {
-			console.log(dataEtalon);
-			console.log(dataEtalon.ptsEtalonnage);
-			const ptsEtalonnage = JSON.parse(dataEtalon.ptsEtalonnage);
+			// console.log(dataEtalon);
+			// console.log(dataEtalon[0].ptsEtalonnage);
+			const ptsEtalonnage = JSON.parse(dataEtalon[0].ptsEtalonnage);
 			let dataParsedForRegression = [];
 			for (let i = 0; i < ptsEtalonnage.appareil.length; i++) {
 				dataParsedForRegression.push([
@@ -111,7 +143,7 @@ const GestionEtalons = () => {
 				order: 4,
 				precision: 10,
 			});
-			console.log('resultat de modelisation ', resultat);
+			// console.log('resultat de modelisation ', resultat);
 			// console.log(resultat.points);
 
 			let erreurCumulé = 0;
@@ -151,7 +183,26 @@ const GestionEtalons = () => {
 			setDataChart(dataForChartTemp);
 		}
 	}, [dataEtalon]);
+	useEffect(() => {
+		if (etalonChoisi) {
+			setEtalonnageChoisi(etalonnageAChoisirUnique[0]);
+		}
+	}, [etalonChoisi]);
+	useEffect(() => {
+		if (etalonChoisi) {
+			const allo = datasEtalons.filter(
+				(e) =>
+					new Date(e.dateEtalonnage).toLocaleDateString('FR-fr') ==
+					new Date(etalonnageChoisi).toLocaleDateString('FR-fr')
+			);
+			// console.log(allo);
+			setDataEtalon(allo);
+		}
+	}, [etalonnageChoisi]);
+
 	let etalonAChoisir;
+	let etalonnageAChoisir;
+	let etalonnageAChoisirUnique;
 	if (datasEtalons) {
 		const etalonParDomaineChoisi = datasEtalons.filter(
 			(e) => e.domaine == domaineChoisi
@@ -159,39 +210,108 @@ const GestionEtalons = () => {
 		etalonAChoisir = [
 			...new Set(etalonParDomaineChoisi.map((item) => item.marquage)),
 		];
+		// if (etalonChoisi.includes('225777')) {}
+		etalonnageAChoisir = etalonParDomaineChoisi.filter(
+			(e) => e.marquage == etalonChoisi
+		);
+		etalonnageAChoisirUnique = [
+			...new Set(
+				etalonnageAChoisir.map((item) =>
+					new Date(item.dateEtalonnage).getTime()
+				)
+			),
+		];
+
+		// console.log('etalonnageAChoisir', etalonnageAChoisir);
+		etalonnageAChoisirUnique = etalonnageAChoisirUnique.sort().reverse();
+		// console.log('etalonnageAChoisirUnique', etalonnageAChoisirUnique);
 	}
 	return (
-		<div style={{ width: '80VW', height: '80vH' }}>
-			{domaineUnique
-				? domaineUnique.map((e) => (
-						<h1 onClick={() => setDomaineChoisi(e)}>{e}</h1>
+		<div style={{ width: '80VW', height: '80vH', margin: '0 auto' }}>
+			<div className="classListeDomaine">
+				{domaineUnique
+					? domaineUnique.map((e) => (
+							<div
+								className={
+									domaineChoisi == e
+										? 'classDomaineActif'
+										: 'classDomaine'
+								}
+								onClick={() => setDomaineChoisi(e)}
+							>
+								{e}
+							</div>
+					  ))
+					: null}
+			</div>
+			<div className="classListeEtalon">
+				{etalonAChoisir
+					? etalonAChoisir.map((e) => (
+							<div
+								className={
+									etalonChoisi == e
+										? 'classEtalonActif'
+										: 'classEtalon'
+								}
+								onClick={() => setEtalonChoisi(e)}
+								style={{ margin: 10 }}
+							>
+								{e}
+							</div>
+					  ))
+					: null}
+			</div>
+			<br />
+			{etalonChoisi}
+
+					{etalonChoisi?<button
+						type="button"
+						onClick={() => setImportation(!importation)}
+						// onClick={() =>startMyInterval() }
+					>
+						<span role="img" aria-label="books">
+							📚
+						</span>
+						importation d'un nouvel etalonnage ?
+					</button>:null}
+			{etalonnageAChoisirUnique
+				? etalonnageAChoisirUnique.map((e) => (
+						<span
+							className={
+								etalonnageChoisi == e
+									? 'classEtalonnageActif'
+									: 'classEtalonnage'
+							}
+							onClick={() => {
+								setEtalonnageChoisi(e);
+							}}
+							style={{ margin: 20 }}
+						>
+							{new Date(e).toLocaleDateString('FR-fr')}
+						</span>
 				  ))
 				: null}
-			{/* {dataEtalon? (JSON.stringify(dataEtalon)):null} */}
-			{domaineChoisi}
-			<br />
+			<h1>{etalonChoisi}</h1>
 
-
-			{/* domaine_Unique = [...new Set(reponse.map((item) => (item).domaine))]; */}
-			{etalonAChoisir
-				? etalonAChoisir.map((e) => <span onClick={()=>setEtalonChoisi(e)} style={{margin:10}}>{e}</span>)
-				: null}
-				<h1>{etalonChoisi}</h1>
-			<div
-				style={{
-					background: '#eceeed76',
-					width: '90%',
-					margin: '0 auto',
-					marginTop: 20,
-					marginBottom: 20,
-				}}
-			>
-				<Line
-					data={dataForChart}
-					options={optionsForChart}
-					// width={600}
-				/>
-			</div>
+			{!importation ? (
+				<div
+					style={{
+						background: '#eceeed76',
+						width: '90%',
+						margin: '0 auto',
+						marginTop: 20,
+						marginBottom: 20,
+					}}
+				>
+					<Line
+						data={dataForChart}
+						options={optionsForChart}
+						// width={600}
+					/>
+				</div>
+			) : (
+				<ImportationEtalonnage etalon={etalonChoisi} domaine={domaineChoisi} />
+			)}
 		</div>
 	);
 };

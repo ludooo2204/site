@@ -10,7 +10,7 @@ import regression from 'regression';
 import { defaults } from 'react-chartjs-2';
 import  GestionEtalons  from './components/GestionEtalons';
 // Disable animating charts by default.
-defaults.animation = false;
+// defaults.animation = false;
 
 const Mesure = () => {
 	const [domaine, setDomaine] = useState(null);
@@ -175,6 +175,7 @@ const Mesure = () => {
 	};
 	return (
 		<div>
+
 			<div
 				style={{
 					display: 'flex',
@@ -225,7 +226,7 @@ const Home = () => {
 export default function App() {
 	return (
 		<Router>
-			<div>
+			{/* <div> */}
 				<nav>
 					<ul>
 						<li>
@@ -238,6 +239,7 @@ export default function App() {
 							<Link to="/gestionEtalons">Gestion des étalons</Link>
 						</li>
 					</ul>
+
 				</nav>
 
 				{/* A <Switch> looks through its children <Route>s and
@@ -253,7 +255,7 @@ export default function App() {
 						<Home />
 					</Route>
 				</Switch>
-			</div>
+			{/* </div> */}
 		</Router>
 	);
 }
