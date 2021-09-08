@@ -20,8 +20,12 @@ const GestionEtalons = () => {
 	if (dataChart) {
 		// console.log('dataChart', dataChart[1]);
 		// console.log('max ', Math.max(...dataChart[1]) + 10);
-		let maxChoisi = Math.max(...dataChart[1]) + 10;
-		let minChoisi = Math.min(...dataChart[1]) - 10;
+		// let maxChoisi = Math.max(...dataChart[1]) *1.1;
+		let minChoisi = Math.min(...dataChart[1])>=0? Math.min(...dataChart[1])*0.9:Math.min(...dataChart[1])*1.1;
+		let maxChoisi = Math.max(...dataChart[1])>=0? Math.max(...dataChart[1])*1.1:Math.max(...dataChart[1])*0.9;
+		console.log(dataChart[1])
+		console.log(minChoisi)
+		console.log(maxChoisi)
 		dataForChart = {
 			labels: dataChart[0],
 			// labels: [0, 1, 2, 3, 4, 5],
@@ -61,6 +65,8 @@ const GestionEtalons = () => {
 				y: {
 					max: maxChoisi,
 					min: minChoisi,
+					// max: domaineChoisi=="VIDE"?maxChoisi:0.7,
+					// min: domaineChoisi=="VIDE"?minChoisi:-0.7,
 					// max: -10,
 					// min: -50,
 					ticks: {
@@ -129,47 +135,80 @@ const GestionEtalons = () => {
 	}, [index]);
 	useEffect(() => {
 		if (dataEtalon) {
-			// console.log(dataEtalon);
+			console.log(dataEtalon);
+			console.log(domaineChoisi);
+			console.log('etalonChoisi', etalonChoisi);
+
 			// console.log(dataEtalon[0].ptsEtalonnage);
 			const ptsEtalonnage = JSON.parse(dataEtalon[0].ptsEtalonnage);
-			let dataParsedForRegression = [];
-			for (let i = 0; i < ptsEtalonnage.appareil.length; i++) {
-				dataParsedForRegression.push([
-					Math.log10(ptsEtalonnage.appareil[i]),
-					Math.log10(ptsEtalonnage.reference[i]),
-				]);
-			}
-			const resultat = regression.polynomial(dataParsedForRegression, {
-				order: 4,
-				precision: 10,
-			});
-			// console.log('resultat de modelisation ', resultat);
-			// console.log(resultat.points);
-
 			let erreurCumulé = 0;
+			let resultat;
 			let dataForChartTemp = [[], [], []];
-			for (const iterator of dataParsedForRegression) {
-				// console.log(iterator);
-				let appareilValue = Math.pow(10, iterator[0]);
-				let referenceValue = Math.pow(10, iterator[1]);
-				let appareilCorrigé = Math.pow(
-					10,
-					resultat.predict(iterator[0])[1]
+
+			let dataParsedForRegression = [];
+			if (domaineChoisi == 'VIDE') {
+				for (let i = 0; i < ptsEtalonnage.appareil.length; i++) {
+					dataParsedForRegression.push([
+						Math.log10(ptsEtalonnage.appareil[i]),
+						Math.log10(ptsEtalonnage.reference[i]),
+					]);
+				}
+				resultat = regression.polynomial(
+					dataParsedForRegression,
+					{
+						order: 4,
+						precision: 10,
+					}
 				);
-				dataForChartTemp[0].push(appareilValue);
-				dataForChartTemp[1].push(
-					((appareilValue - referenceValue) * 100) / referenceValue
+
+				for (const iterator of dataParsedForRegression) {
+					console.log(iterator);
+					let appareilValue = Math.pow(10, iterator[0]);
+					let referenceValue = Math.pow(10, iterator[1]);
+					let appareilCorrigé = Math.pow(
+						10,
+						resultat.predict(iterator[0])[1]
+					);
+					dataForChartTemp[0].push(appareilValue);
+					dataForChartTemp[1].push(
+						((appareilValue - referenceValue) * 100) /
+							referenceValue
+					);
+					dataForChartTemp[2].push(
+						((appareilValue - appareilCorrigé) * 100) /
+							appareilCorrigé
+					);
+					const erreurRelativeEtalonnage =
+						((referenceValue - appareilCorrigé) * 100) /
+						referenceValue;
+					erreurCumulé +=
+						erreurRelativeEtalonnage * erreurRelativeEtalonnage;
+				}
+			} else if (etalonChoisi.includes('2257')) {
+				for (let i = 0; i < ptsEtalonnage.appareil.length; i++) {
+					dataParsedForRegression.push([
+						ptsEtalonnage.appareil[i],
+						ptsEtalonnage.reference[i],
+					]);
+				}
+				resultat = regression.linear(
+					dataParsedForRegression,
+					{
+						// order: 4,
+						precision: 10,
+					}
 				);
-				dataForChartTemp[2].push(
-					((appareilValue - appareilCorrigé) * 100) / appareilCorrigé
-				);
-				// console.log(referenceValue);
-				// console.log(appareilCorrigé);
-				const erreurRelativeEtalonnage =
-					((referenceValue - appareilCorrigé) * 100) / referenceValue;
-				// console.log(erreurRelativeEtalonnage, ' %');
-				erreurCumulé +=
-					erreurRelativeEtalonnage * erreurRelativeEtalonnage;
+
+
+				for (const iterator of dataParsedForRegression) {
+					console.log(iterator);
+					let appareilValue = iterator[0];
+					let referenceValue = iterator[1];
+					let appareilCorrigé = resultat.predict(iterator[0])[1];
+					dataForChartTemp[0].push(appareilValue);
+					dataForChartTemp[1].push(appareilValue - referenceValue	);
+					dataForChartTemp[2].push(appareilValue - appareilCorrigé);
+				}
 			}
 			console.log(
 				'erreur de modelisation relative cumulé ',
@@ -193,9 +232,11 @@ const GestionEtalons = () => {
 			const allo = datasEtalons.filter(
 				(e) =>
 					new Date(e.dateEtalonnage).toLocaleDateString('FR-fr') ==
-					new Date(etalonnageChoisi).toLocaleDateString('FR-fr')
+						new Date(etalonnageChoisi).toLocaleDateString(
+							'FR-fr'
+						) && e.marquage == etalonChoisi
 			);
-			// console.log(allo);
+			console.log(allo);
 			setDataEtalon(allo);
 		}
 	}, [etalonnageChoisi]);
@@ -226,74 +267,66 @@ const GestionEtalons = () => {
 		etalonnageAChoisirUnique = etalonnageAChoisirUnique.sort().reverse();
 		// console.log('etalonnageAChoisirUnique', etalonnageAChoisirUnique);
 	}
-	return (
-		<div style={{ width: '80VW', height: '80vH', margin: '0 auto' }}>
-			<div className="classListeDomaine">
-				{domaineUnique
-					? domaineUnique.map((e) => (
-							<div
+	if (!importation) {
+		return (
+			<div style={{ width: '80VW', height: '80vH', margin: '0 auto' }}>
+				<div className="classListeDomaine">
+					{domaineUnique
+						? domaineUnique.map((e) => (
+								<div
+									className={
+										domaineChoisi == e
+											? 'classDomaineActif'
+											: 'classDomaine'
+									}
+									onClick={() => setDomaineChoisi(e)}
+								>
+									{e}
+								</div>
+						  ))
+						: null}
+				</div>
+
+				<div className="classListeEtalon">
+					{etalonAChoisir
+						? etalonAChoisir.map((e) => (
+								<div
+									className={
+										etalonChoisi == e
+											? 'classEtalonActif'
+											: 'classEtalon'
+									}
+									onClick={() => setEtalonChoisi(e)}
+									style={{ margin: 10 }}
+								>
+									{e}
+								</div>
+						  ))
+						: null}
+				</div>
+				<br />
+				{etalonChoisi}
+
+				{etalonnageAChoisirUnique
+					? etalonnageAChoisirUnique.map((e) => (
+							<span
+								key={e}
 								className={
-									domaineChoisi == e
-										? 'classDomaineActif'
-										: 'classDomaine'
+									etalonnageChoisi == e
+										? 'classEtalonnageActif'
+										: 'classEtalonnage'
 								}
-								onClick={() => setDomaineChoisi(e)}
+								onClick={() => {
+									setEtalonnageChoisi(e);
+								}}
+								style={{ margin: 20 }}
 							>
-								{e}
-							</div>
+								{new Date(e).toLocaleDateString('FR-fr')}
+							</span>
 					  ))
 					: null}
-			</div>
-			<div className="classListeEtalon">
-				{etalonAChoisir
-					? etalonAChoisir.map((e) => (
-							<div
-								className={
-									etalonChoisi == e
-										? 'classEtalonActif'
-										: 'classEtalon'
-								}
-								onClick={() => setEtalonChoisi(e)}
-								style={{ margin: 10 }}
-							>
-								{e}
-							</div>
-					  ))
-					: null}
-			</div>
-			<br />
-			{etalonChoisi}
+				<h1>{etalonChoisi}</h1>
 
-					{etalonChoisi?<button
-						type="button"
-						onClick={() => setImportation(!importation)}
-						// onClick={() =>startMyInterval() }
-					>
-						<span role="img" aria-label="books">
-							📚
-						</span>
-						importation d'un nouvel etalonnage ?
-					</button>:null}
-			{etalonnageAChoisirUnique
-				? etalonnageAChoisirUnique.map((e) => (
-						<span
-							className={
-								etalonnageChoisi == e
-									? 'classEtalonnageActif'
-									: 'classEtalonnage'
-							}
-							onClick={() => {
-								setEtalonnageChoisi(e);
-							}}
-							style={{ margin: 20 }}
-						>
-							{new Date(e).toLocaleDateString('FR-fr')}
-						</span>
-				  ))
-				: null}
-			<h1>{etalonChoisi}</h1>
-
-			{!importation ? (
 				<div
 					style={{
 						background: '#eceeed76',
@@ -309,11 +342,35 @@ const GestionEtalons = () => {
 						// width={600}
 					/>
 				</div>
-			) : (
-				<ImportationEtalonnage etalon={etalonChoisi} domaine={domaineChoisi} />
-			)}
-		</div>
-	);
+
+				<button
+					type="button"
+					onClick={() => setImportation(!importation)}
+					// onClick={() =>startMyInterval() }
+				>
+					<span role="img" aria-label="books">
+						📚
+					</span>
+					importation d'un nouvel etalonnage ?
+				</button>
+			</div>
+		);
+	} else {
+		return (
+			<div
+				style={{
+					width: '90VW',
+					height: '90vH',
+					display: 'flex',
+					margin: '0 auto',
+					background: 'green',
+					justifyContent: 'center',
+				}}
+			>
+				<ImportationEtalonnage datasEtalons={datasEtalons} />
+			</div>
+		);
+	}
 };
 
 export default GestionEtalons;
