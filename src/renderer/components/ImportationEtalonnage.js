@@ -209,6 +209,26 @@ const ImportationEtalonnage = ({ datasEtalons }) => {
 				data.push(dataligneCalys150);
 			}
 			dataToExport = handleCalysData(data);
+		}  else if (etalonChoisi.includes('TCK03')) {
+			let rows = areaValue.split('\n');
+			console.log(rows);
+			for (const row of rows) {
+				let dataLigne = row.split(' ');
+				for (let i = 0; i < dataLigne.length; i++) {
+					if (dataLigne[i].includes(',')) {
+						dataLigne[i] = dataLigne[i].replace(',', '.');
+					}
+				}
+				console.log(dataLigne);
+				let dataligneCalys150 = [];
+				dataligneCalys150[0] = parseFloat(dataLigne[0]);
+				dataligneCalys150[1] = parseFloat(dataLigne[1]);
+				dataligneCalys150[2] = parseFloat(dataLigne[3]);
+
+				data.push(dataligneCalys150);
+			}
+			console.log(data)
+			dataToExport = handleCalysData(data);
 		}
 		console.log('dataToExport');
 		console.log(dataToExport);

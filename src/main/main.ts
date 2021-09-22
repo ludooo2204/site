@@ -11,28 +11,25 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
+let Datastore = require('nedb'),
+	db = new Datastore({ filename: 'data.db', autoload: true }),
+	dbEcme = new Datastore({ filename: 'dbEcme.db', autoload: true }),
+	dbInterventions = new Datastore({
+		filename: 'dbInterventions.db',
+		autoload: true,
+	});
+
 const Readline = require('@serialport/parser-readline');
 const serialport = require('serialport');
-console.log(serialport);
+// console.log(serialport);
 const XLSX = require('xlsx');
-var workbook = XLSX.readFile(
-	'C:\\Users\\ludovic.vachon\\electron\\interventions\\src\\fichierTransfert.xls'
-);
-/* DO SOMETHING WITH workbook HERE */
-
-// get first sheet
-let first_sheet_name = workbook.SheetNames[0];
-let worksheet = workbook.Sheets[first_sheet_name];
-
-// read value in D4
-let cell = worksheet['A1'].v;
-console.log(cell);
+// const port
 export default class AppUpdater {
 	constructor() {
 		log.transports.file.level = 'info';
@@ -40,21 +37,120 @@ export default class AppUpdater {
 		autoUpdater.checkForUpdatesAndNotify();
 	}
 }
-
+// listSerialPorts()
 let mainWindow: BrowserWindow | null = null;
 async function listSerialPorts() {
 	await serialport.list().then((ports, err) => {
-		console.log("listserialport")
-		if (ports) console.log(ports);
-		if (err) console.log(err);
+		console.log('listserialport');
+		console.log('ports',ports);
+		if (ports) {mainWindow.webContents.send('initCalys', ports)};
+		if (err) {console.log(err)};
 	});
 }
-listSerialPorts();
-const port = new serialport('COM11', { baudRate: 115200 });
-const lineStream = port.pipe(new Readline());
-console.log('rem');
-port.write('rem\n');
+// const port = new serialport('COM8', { baudRate: 115200 });
+// const port = new serialport('COM11', { baudRate: 115200 });
+// const lineStream = port.pipe(new Readline());
+// console.log('rem');
+// port.write('rem\n');
 
+ipcMain.on('dial', async (event, arg) => {
+	dialog.showMessageBox({
+		message: 'coucou',
+	});
+});
+ipcMain.on('initCalys', async (event, arg) => {
+	console.log("init calys")
+	listSerialPorts();
+});
+ipcMain.on('ChoixCalys', async (event, com) => {
+	console.log("choix calys => ", com)
+const port = new serialport(com, { baudRate: 115200 });
+port.write('rem\n');
+console.log("port conecction")
+console.log(port)
+
+		});
+ipcMain.on('lectureDB', async (event, arg) => {
+	db.find({})
+		.sort({ date_prevue: 1 })
+		.exec(function (err, docs) {
+			// docs is an array containing documents that have name as bigbounty
+			// If no document is found, docs is equal to []
+
+			event.reply('lectureDB', docs);
+		});
+});
+ipcMain.on('lectureDBecme', async (event, arg) => {
+	console.log('dbEcme');
+	dbEcme.find({}).exec(function (err, docs) {
+		// docs is an array containing documents that have name as bigbounty
+		// If no document is found, docs is equal to []
+		event.reply('lectureDBecme', docs);
+	});
+});
+ipcMain.on('lectureDBinterventions', async (event, arg) => {
+	console.log('dbEcme');
+	dbInterventions.find({}).exec(function (err, docs) {
+		// docs is an array containing documents that have name as bigbounty
+		// If no document is found, docs is equal to []
+		event.reply('lectureDBinterventions', docs);
+	});
+});
+ipcMain.on('effacerDBinterventions', async (event, arg) => {
+	console.log('effacerDBinterventions', arg);
+	dbInterventions.remove({ marquage: arg }, function (err, numremoved) {
+		// numremoved is the number of documents that are removed.
+		console.log('numremoved');
+		console.log(numremoved);
+		console.log(err);
+		event.reply('effacerDBinterventions', numremoved);
+	});
+});
+ipcMain.on('updateDBinterventions', async (event, arg) => {
+	console.log('update', arg);
+	dbInterventions.update(
+		{ marquage: arg[0] },
+		{ $set: arg[1] },
+		function (err, numReplaced) {
+			console.log(numReplaced);
+			// The doc #3 has been replaced by { _id: 'id3', planet: 'Pluton' }
+			// Note that the _id is kept unchanged, and the document has been replaced
+			// (the 'system' and inhabited fields are not here anymore)
+		}
+	);
+});
+ipcMain.on('insererDBinterventions', async (event, arg) => {
+	console.log('insert');
+	console.log(arg);
+	dbInterventions.insert(arg, function (err, newrec) {
+		// Callback is optional
+		// newrec is the newly inserted document, including its _id
+		// newrec has no key called notToBeSaved since its value was undefined
+		console.log(err);
+		console.log(newrec);
+		event.reply('insererDB', 'ca a marché ?');
+	});
+});
+ipcMain.on('insertdbECME', async (event, arg) => {
+	console.log('insert');
+	console.log(arg);
+	dbEcme.insert(arg, function (err, newrec) {
+		// Callback is optional
+		// newrec is the newly inserted document, including its _id
+		// newrec has no key called notToBeSaved since its value was undefined
+		console.log(err);
+		console.log(newrec);
+		event.reply('insertdbECME', 'ca a marché !');
+	});
+});
+ipcMain.on('effacerDB', async (event, arg) => {
+	db.remove({ name: 'ludo' }, function (err, numremoved) {
+		// numremoved is the number of documents that are removed.
+		console.log('numremoved');
+		console.log(numremoved);
+		event.reply('effacerDB', numremoved);
+	});
+});
 ipcMain.on('lectureCalys', async (event, arg) => {
 	const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
 	console.log('#######arg main lectureCalys');
@@ -65,19 +161,17 @@ ipcMain.on('lectureCalys', async (event, arg) => {
 
 	// Pour mesurer la CSF
 	// if (arg == 'meas') port.write('MEAS:RJUN?\n');
-	if (arg == 'meas') port.write('MEAS?\n');
+	// if (arg == 'meas') port.write('MEAS?\n');
 	if (arg == 'measCont') {
 	}
 });
 ipcMain.on('ecritureCalys', async (event, arg) => {
 	const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
 	console.log('#######arg main ecritureCalys');
-	console.log('=='+arg+'===');
+	console.log('==' + arg + '===');
 	console.log(msgTemplate(arg));
 	event.reply('ecritureCalys', 'couool');
-	port.write('SOUR '+arg+'\n')
-	// port.write('SOUR 900\n')
-	// shell.openPath('C:\\Users\\ludovic.vachon\\electron\\serial\\electron-serialport\\vide v2.0.xls');
+	// port.write('SOUR ' + arg + '\n');
 });
 ipcMain.on('xls', async (event, arg) => {
 	console.log('#######arg main ecritureCalys');
@@ -87,16 +181,77 @@ ipcMain.on('xls', async (event, arg) => {
 		'C:\\Users\\ludovic.vachon\\electron\\serial\\electron-serialport\\vide v2.0.xls'
 	);
 });
+ipcMain.on('xlsBainDrop', async (event, arg) => {
+	console.log('#######arg main ecritureCalys');
+	console.log('path du document inséré = ', arg);
+	db.remove({}, { multi: true }, function (err, numremoved) {
+		// numremoved is the number of documents that are removed.
+		console.log('numremoved');
+		console.log(numremoved);
+		event.reply('effacerDB', numremoved);
+	});
+	var workbook = XLSX.readFile(arg, {
+		type: 'binary',
+		cellDates: true,
+	});
 
-lineStream.on('data', (data) => {
-	console.log(' data from linestream');
-	console.log(data);
-	mainWindow.webContents.send('lectureCalys', data);
-	// mainWindow.webContents.send('asynchronous-message', data);
-	// dataRecu=data
-	// event.reply('ipc-example', data);
-	// console.log(JSON.stringify(mainWindow))
+	let first_sheet_name = workbook.SheetNames[0];
+	let worksheet = workbook.Sheets[first_sheet_name];
+
+	// let cell = worksheet['A1'].v;
+	let worksheetJSON = XLSX.utils.sheet_to_json(worksheet);
+	db.insert(worksheetJSON, function (err, newrec) {
+		// Callback is optional
+		// newrec is the newly inserted document, including its _id
+		// newrec has no key called notToBeSaved since its value was undefined
+		if (err) console.error(err);
+		else console.log('nbr de document inserés = ', newrec.length);
+		// event.reply('insererDB', newRec);
+		event.reply('xlsBainDrop', worksheetJSON);
+	});
+	// event.reply('xlsBain', worksheetJSON);
 });
+ipcMain.on('xlsECMEDrop', async (event, arg) => {
+	console.log('#######arg main ecritureCalys');
+	console.log('path du document inséré = ', arg);
+	dbEcme.remove({}, { multi: true }, function (err, numremoved) {
+		// numremoved is the number of documents that are removed.
+		console.log('numremoved');
+		console.log(numremoved);
+		event.reply('effacerDB', numremoved);
+	});
+	var workbook = XLSX.readFile(arg, {
+		type: 'binary',
+		cellDates: true,
+	});
+
+	let first_sheet_name = workbook.SheetNames[0];
+	let worksheet = workbook.Sheets[first_sheet_name];
+
+	// let cell = worksheet['A1'].v;
+	let worksheetJSON = XLSX.utils.sheet_to_json(worksheet);
+	console.log(worksheetJSON);
+	dbEcme.insert(worksheetJSON, function (err, newrec) {
+		// Callback is optional
+		// newrec is the newly inserted document, including its _id
+		// newrec has no key called notToBeSaved since its value was undefined
+		if (err) console.error(err);
+		else console.log('nbr de document inserés = ', newrec.length);
+		// event.reply('insererDB', newRec);
+		event.reply('xlsECMEDrop', worksheetJSON);
+	});
+	// event.reply('xlsBain', worksheetJSON);
+});
+
+// lineStream.on('data', (data) => {
+// 	console.log(' data from linestream');
+// 	console.log(data);
+// 	mainWindow.webContents.send('lectureCalys', data);
+// 	// mainWindow.webContents.send('asynchronous-message', data);
+// 	// dataRecu=data
+// 	// event.reply('ipc-example', data);
+// 	// console.log(JSON.stringify(mainWindow))
+// });
 
 if (process.env.NODE_ENV === 'production') {
 	const sourceMapSupport = require('source-map-support');
@@ -146,7 +301,6 @@ const createWindow = async () => {
 		icon: getAssetPath('icon.png'),
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
-
 		},
 	});
 
@@ -163,6 +317,11 @@ const createWindow = async () => {
 		} else {
 			mainWindow.show();
 			mainWindow.focus();
+			// db.find({ name: 'bigbounty' }, function (err, docs) {
+			// 	// docs is an array containing documents that have name as bigbounty
+			// 	// If no document is found, docs is equal to []
+			// 	mainWindow.webContents.send('lectureDB', docs);
+			// });
 		}
 	});
 
