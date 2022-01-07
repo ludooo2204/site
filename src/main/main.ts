@@ -342,7 +342,7 @@ dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
 
 	fs.readFile(file.filePaths[0], (err, data) => {
 		if (err) throw err;
-		fs.writeFileSync('C:\\__temp\\'+etalonChoisi[0].marquage+" - "+etalonChoisi[0].dateEtalonnage+".pdf", data, 'binary',()=>console.log("nickel"));
+		fs.writeFileSync('C:\\__temp\\'+etalonChoisi[0].marquage+" - "+etalonChoisi[0].dateEtalonnage+".pdf", data, 'binary');
 	  });
 	console.log(file)
 })
