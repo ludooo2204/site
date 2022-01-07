@@ -9,7 +9,7 @@ import { arrayExpression } from '@babel/types';
 import regression from 'regression';
 import { defaults } from 'react-chartjs-2';
 import GestionEtalons from './components/GestionEtalons';
-import MesureCalys from './components/MesureCalys';
+import MesureCalysVide from './components/MesureCalysVide';
 import RechercheDeca from './components/RechercheDeca';
 import InterventionAtelier from './components/InterventionAtelier';
 import Simulation from './components/simulation/Simulation'
@@ -23,10 +23,14 @@ const Mesure = () => {
 	const [resultatModelisation, setResultatModelisation] = useState(null);
 
 	useEffect(() => {
+
+
+
 		window.electron.ipcRenderer.on('db', (arg) => {
 			console.log('db from front');
 			console.log(arg);
 		});
+
 
 		fetch('http://localhost/API_test/get.php')
 			.then((reponse) => reponse.json())
@@ -86,19 +90,28 @@ const Mesure = () => {
 				</div>
 				<div
 					style={{ margin: 10 }}
-					onClick={() => setDomaineChoisi('mesure')}
+					onClick={() => setDomaineChoisi('mesureVide')}
 				>
-					mesure
+					mesure Vide
+				</div>
+				<div
+					style={{ margin: 10 }}
+					onClick={() => setDomaineChoisi('mesureTempérature')}
+				>
+					mesure Température
 				</div>
 			</div>
-			<h1>{domaineChoisi}</h1>
+			{/* <h1>{domaineChoisi}</h1> */}
 			{/* <input
 			type="text"
 			value={Number(inputValue)}
 			onChange={handleInput}
 			/> */}
-			{domaineChoisi == 'mesure' ? (
-				<MesureCalys datasEtalons={datasEtalons} />
+			{domaineChoisi == 'mesureTempérature' ? (
+				<MesureCalysTemperature datasEtalons={datasEtalons} />
+			) : null}
+			{domaineChoisi == 'mesureVide' ? (
+				<MesureCalysVide datasEtalons={datasEtalons} />
 			) : null}
 			{domaineChoisi == 'simulation' ? <Simulation /> : null}
 		</div>
@@ -116,6 +129,15 @@ const Home = () => {
 	// const [db, setDb] = useState(null)
 	// const [db, setDb] = useState(null)
 	useEffect(() => {
+
+		// window.electron.ipcRenderer.updateDBSimulations();
+		// window.electron.ipcRenderer.insererDBSimulations();
+
+		window.electron.ipcRenderer.on('lectureSimulations', (arg) => {
+			console.log('lectureSimulations');
+			console.log(arg);
+		});
+
 		window.electron.ipcRenderer.on('xlsECMEDrop', (arg) => {
 			// eslint-disable-next-line no-console
 			console.log('arg from xlsBain');

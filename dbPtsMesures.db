@@ -1,0 +1,57 @@
+{"four":"APV3","dateEtalonnage":"07/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":"1281"}],"_id":"0MBd5S5m4pFu1t4O"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 2","typeTc":"N"},"listePoints":["551.01","761.04","901","1051.02","1211"],"_id":"0Qf0iQY9NnDejxXT"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"N"},"listePoints":["550.39","760.38","900.39","1050.4","1210.42"],"_id":"1ZBHKOhfC5uByIhD"}
+{"four":"APV3","dateEtalonnage":"07/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 3","typeTc":"N"},"listePoints":["1","2","3"],"_id":"1olhTJiUU6GWlJ2V"}
+{"four":"Consarc2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"S"},"listePoints":["500.3","550.4","760.4","1050.3","1220.2"],"_id":"3XM0EoCuCRe2GN6o"}
+{"four":"B54","dateEtalonnage":"30/09/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"TC REGULATION","typeTc":"S"},"listePoints":["763.3","1047.3","1097.1","1203.7"],"_id":"4uXIGq3pWuuPPCSw"}
+{"four":"Consarc2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"S"},"listePoints":["500.4","550.4","760.2","1050.1","1220"],"_id":"5GOwp8lKk1yMhK7a"}
+{"four":"Consarc2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":"1328.6"}],"_id":"6DBNCR3fOSKLQd8r"}
+{"four":"APV2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 2","typeTc":"N"},"listePoints":["1050","1100","1150"],"_id":"83xyRAvqe4RofD0c"}
+{"four":"APV3","dateEtalonnage":"07/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"N"},"listePoints":["1050","1100","1210"],"_id":"9jZ5IrfvEnzjnulW"}
+{"four":"Consarc1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 2","typeTc":"N"},"listePoints":["551","761","900.9","1050.9","1210.9"],"_id":"9ncuEW8qRvN5yUgw"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 3","typeTc":"N"},"listePoints":["550.48","760.52","900.42","1050.42","1210.45"],"_id":"AtFh2IUkiS5HpHTI"}
+{"four":"APV2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 4","typeTc":"N"},"listePoints":["1049.3","1099.3","1149.3"],"_id":"BXKWviQyFbiFGzfU"}
+{"four":"APV3","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 4","typeTc":"N"},"listePoints":["1050","1100.05","1149.99"],"_id":"CgJoFGJYZjohRkD0"}
+{"four":"B54","dateEtalonnage":"30/09/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":"1280"}],"_id":"DxSx9PX7pwGMfWT7"}
+{"four":"APV3","dateEtalonnage":"07/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 4","typeTc":"N"},"listePoints":["4","5","6"],"_id":"Ers1Aj1iV84vRw1Y"}
+{"four":"APV3","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 3","typeTc":"N"},"listePoints":["1050.22","1100.21","1150.21"],"_id":"H0kdsJhvGoz2PYAf"}
+{"four":"MECA","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"K"},"listePoints":["80","190","250","190"],"_id":"HoYixiRJVKvROtrr"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION-Arriere","typeTc":"S"},"listePoints":["546.6","756.5","896.5","1046.7","1206.5"],"_id":"I4ziVruQDaEBFy6u"}
+{"four":"MECA","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"TC pieces Honeywell","typeTc":"K"},"listePoints":["80.1","190.1","250.1"],"_id":"ItJQEgX6mV389AiA"}
+{"four":"Consarc1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 3","typeTc":"N"},"listePoints":["549.6","759.6","899.4","1049.3","1209.2"],"_id":"JbU7cm0h0wMXsITQ"}
+{"four":"APV3","dateEtalonnage":"07/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"S"},"listePoints":["7","8","9"],"_id":"K2WYb6gGiuFD7yCC"}
+{"four":"APV1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"N"},"listePoints":["1049","1098.9","1149"],"_id":"Kyk5xRyW7PtLEgz2"}
+{"four":"Consarc1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"N"},"listePoints":["550.7","760.6","900.5","1050.5","1210.4"],"_id":"LcxRxplAQ9cnHgOx"}
+{"four":"Consarc1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"S"},"listePoints":["550.2","760.2","900.3","1050.1","1210"],"_id":"MzGOECYZ3lL2MtR5"}
+{"four":"APV2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 3","typeTc":"N"},"listePoints":["1049.8","1099.8","1149.7"],"_id":"NSb528WPaBImiE6e"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE-Milieu","typeTc":"S"},"listePoints":[{"sécurité":""},{"sécurité":"1279.3"}],"_id":"NloGslgdDZ7svQD6"}
+{"four":"APV1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 2","typeTc":"N"},"listePoints":["1049.6","1099.3","1149.2"],"_id":"P6onJGwDbwGK63j5"}
+{"four":"APV2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"N"},"listePoints":["1049.9","1099.9","1149.8"],"_id":"RXud54jIAEapaEkf"}
+{"four":"APV2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":"1280.0"}],"_id":"T7vVVTNQiRWOBS9I"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE-Arriere","typeTc":"S"},"listePoints":[{"sécurité":"1280"}],"_id":"UfPjOC2LXR5KIIZ7"}
+{"four":"APV3","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":""},{"sécurité":"1280.4"}],"_id":"V1NvetHDAKM8en23"}
+{"four":"B53","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"TC pieces Honeywell","typeTc":"N"},"listePoints":["759.8","1049.6","1099.6","1209.6"],"_id":"Xm4GlHjSvaKC6E1S"}
+{"four":"APV3","dateEtalonnage":"07/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 2","typeTc":"N"},"listePoints":["1202","1210","21"],"_id":"YPSWHZ9OxY20LzZw"}
+{"four":"APV2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"S"},"listePoints":["1050.1","1100.1","1150.1"],"_id":"YqUFEO3aAqpj0iCM"}
+{"four":"APV1","dateEtalonnage":"07/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"N"},"listePoints":["1050","1150","1150"],"_id":"aEh0WG5DSblAWjx7"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE-Avant","typeTc":"S"},"listePoints":[{"sécurité":""},{"sécurité":"1280.2"}],"_id":"dHNsN7jrlgMApWT2"}
+{"four":"Consarc1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":"1330.5"}],"_id":"do4MhbBkRP6gPDRx"}
+{"four":"B53","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"S"},"listePoints":["756","1046","1096.2","1206.2"],"_id":"eBf9jG9NUSMCXbYq"}
+{"four":"B53","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":""},{"sécurité":"1284"}],"_id":"fCTYCbRqUfKAlhim"}
+{"four":"HEXA2","dateEtalonnage":"06/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"Régulation - Haut","typeTc":"K"},"listePoints":["860","950","1060"],"_id":"gTAbmD4an9D4tfMx"}
+{"four":"HEXA2","dateEtalonnage":"06/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"Régulation - Milieu","typeTc":"K"},"listePoints":["859","949","1059"],"_id":"hpMcR1MX8bwmW1X5"}
+{"four":"APV1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"S"},"listePoints":["1050.1","1100.3","1150.3"],"_id":"hxRlCUGBtHWEaA4Y"}
+{"four":"APV1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"SECURITE","typeTc":"S"},"listePoints":[{"sécurité":"1281.2"}],"_id":"i9ARnDWKjolNBo2x"}
+{"four":"HEXA2","dateEtalonnage":"06/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"Charge - Haut","typeTc":"K"},"listePoints":["849","949","1059"],"_id":"k794zSUvLeapxmhv"}
+{"four":"APV3","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 2","typeTc":"N"},"listePoints":["1050.57","1100.71","1150.66"],"_id":"kevtrQ8V47LHeZ0v"}
+{"four":"HEXA2","dateEtalonnage":"06/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"Charge - Milieu","typeTc":"K"},"listePoints":["860","950","1060"],"_id":"l6Io2wJXRxDnE9Sd"}
+{"four":"APV3","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION","typeTc":"S"},"listePoints":["1050.5","1100.4","1150.4"],"_id":"lFd7uZXL9eDvJzgg"}
+{"four":"HEXA2","dateEtalonnage":"06/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"Charge - Bas","typeTc":"K"},"listePoints":["859","950","1060"],"_id":"njehQ8BxGqGVNNFg"}
+{"four":"Consarc2","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE HONEYWELL","typeTc":"S"},"listePoints":["499.9","549.8","759.9","1049.9","1219.9"],"_id":"oI3LzRrXHI6rLwKd"}
+{"four":"B54","dateEtalonnage":"30/09/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE HONEYWELL","typeTc":"S"},"listePoints":["760.0","1050.2","1100.1","1207.9"],"_id":"pH0El8UnPtQw3MtH"}
+{"four":"APV3","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 1","typeTc":"N"},"listePoints":["1050.74","1100.73","1150.73"],"_id":"pPtC9n0hSs1VvdTd"}
+{"four":"B54","dateEtalonnage":"30/09/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"TC CHARGE","typeTc":"S"},"listePoints":["760.4","1050.6","1100.5","1208.4"],"_id":"qLpEZUSvejXgJ6Pu"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION-Avant","typeTc":"S"},"listePoints":["547.3","757.4","897.4","1047.5","1207.6"],"_id":"rIpP1G4YA4P0V6Sc"}
+{"four":"APV1","dateEtalonnage":"04/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"CHARGE 3","typeTc":"N"},"listePoints":["1049.1","1099.1","1149.1"],"_id":"sKGgcMuEfjzT91Yg"}
+{"four":"HEXA2","dateEtalonnage":"06/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"Régulation - Bas","typeTc":"K"},"listePoints":["859","949","1059"],"_id":"v57jIpgFWfmkU0tz"}
+{"four":"TTH","dateEtalonnage":"11/10/2021","calysChoisi":"2257775-AMS","voieChoisie":{"name":"REGULATION-Milieu","typeTc":"S"},"listePoints":["547","757","897","1047","1207.1"],"_id":"yIiImFTh3fkMxMo4"}

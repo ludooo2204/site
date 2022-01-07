@@ -87,12 +87,6 @@ window.electron.ipcRenderer.updateDBinterventions([data.original.marquage,{isTra
 								))}
 							</select>
 
-							// <input
-							// 	onChange={handleChangeOperateur}
-							// 	type="text"
-							// 	// autoFocus
-							// 	placeholder="entrer valeur"
-							// />
 						)}
 					</span>
 					<span>
@@ -105,7 +99,10 @@ window.electron.ipcRenderer.updateDBinterventions([data.original.marquage,{isTra
 				</div>
 				<div className="itemInterventionInteraction">
 					<span>
-						<button onClick={()=>{}}>Saisie intervention</button>
+
+						<button onClick={()=>{
+							window.electron.ipcRenderer.ouvrirFichier(data)
+						}}>Saisie intervention</button>
 					</span>
 					<span>
 						<input type="checkbox" className="checkIntervention" checked={isStickerChecked} onChange={handleChangeStickers}/>

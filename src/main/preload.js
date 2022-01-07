@@ -5,29 +5,47 @@ contextBridge.exposeInMainWorld('electron', {
 
 
 		meas() {
-			ipcRenderer.send('lectureCalys', 'meas');
+			ipcRenderer.send('lectureCalys', 'MEAS?\n');
 		},
-		ecriture(four) {
+		ecritureCalys(four) {
 			console.log(four);
 			ipcRenderer.send('ecritureCalys', four);
 		},
 		initCalys() {
 			ipcRenderer.send('initCalys');
 		},
+		remote() {
+			ipcRenderer.send('remote');
+		},
 		ChoixCalys(com) {
 			ipcRenderer.send('ChoixCalys',com);
+		},
+		changementTypeTc(com) {
+			ipcRenderer.send('changementTypeTc',com);
 		},
 		lectureDB() {
 			ipcRenderer.send('lectureDB');
 		},
+		modeLocal() {
+			ipcRenderer.send('modeLocal');
+		},
 		lectureDBecme() {
 			ipcRenderer.send('lectureDBecme');
+		},
+		updateDBSimulations() {
+			ipcRenderer.send('updateDBSimulations');
+		},
+		ouvrirFichier(data) {
+			ipcRenderer.send('ouvrirFichier',data);
 		},
 		insertdbECME(data) {
 			ipcRenderer.send('insertdbECME', data);
 		},
 		insererDBinterventions(data) {
 			ipcRenderer.send('insererDBinterventions', data);
+		},
+		insererDBSimulations() {
+			ipcRenderer.send('insererDBSimulations');
 		},
 		updateDBinterventions(data) {
 			ipcRenderer.send('updateDBinterventions', data);
@@ -51,8 +69,20 @@ contextBridge.exposeInMainWorld('electron', {
 		xlsECMEDrop(pathFile) {
 			ipcRenderer.send('xlsECMEDrop', pathFile);
 		},
+		dbPtsMesures(data) {
+			ipcRenderer.send('dbPtsMesures', data);
+		},
+		lectureDbPtsMesures(four,date,listePointsCorrigés) {
+			ipcRenderer.send('lectureDbPtsMesures', four,date,listePointsCorrigés);
+		},
 		xls() {
 			ipcRenderer.send('xls');
+		},
+		openXlsForSimulation() {
+			ipcRenderer.send('openXlsForSimulation');
+		},
+		ouvrirRapport(etalonChoisi) {
+			ipcRenderer.send('ouvrirRapport',etalonChoisi);
 		},
 		on(channel, func) {
 			// const validChannels = ['ipc-example'];

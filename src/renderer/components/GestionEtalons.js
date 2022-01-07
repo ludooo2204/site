@@ -26,6 +26,8 @@ const GestionEtalons = () => {
 	const [echelleChartMax, setEchelleChartMax] = useState(null);
 	const [historiqueChart, setHistoriqueChart] = useState(false);
 	const [dataHistorique, setDataHistorique] = useState(null);
+	const [inputBrut, setInputBrut] = useState(null);
+	const [incertitudeValue, setIncertitudeValue] = useState(null);
 	const [modelisationChoisie, setModelisationChoisie] = useState({
 		ordre: 4,
 		precision: 10,
@@ -127,8 +129,9 @@ const GestionEtalons = () => {
 
 			scales: {
 				y: {
-					min: echelleChartMin ? echelleChartMin : null,
-					max: echelleChartMax ? echelleChartMax : null,
+					//pour le vide
+					min: echelleChartMin ? Math.floor(echelleChartMin) : null,
+					max: echelleChartMax ? Math.floor(echelleChartMax) : null,
 					// max: maxChoisi,
 					// min: minChoisi,
 					// max: domaineChoisi=="VIDE"?maxChoisi:0.7,
@@ -159,7 +162,7 @@ const GestionEtalons = () => {
 		};
 	}
 	if (dataChartHistorique) {
-		console.log(dataChartHistorique)
+		console.log(dataChartHistorique);
 		dataForChartHistorique = {
 			labels: dataChartHistorique[0],
 			// labels: [0, 1, 2, 3, 4, 5],
@@ -180,17 +183,19 @@ const GestionEtalons = () => {
 			// events:['click'],
 			plugins: {
 				tooltip: {
-					callbacks:{
-					label: function (tooltip) {
-						// console.log(tooltip)
-						console.log(dataHistorique[tooltip.dataIndex][1]);
-						console.log(tooltip.dataset.label);
-						// .includes('simulation'))
-						// 	return false;
-						// else
-						 return new Date(dataHistorique[tooltip.dataIndex][1]).toLocaleDateString('FR-fr');
+					callbacks: {
+						label: function (tooltip) {
+							// console.log(tooltip)
+							console.log(dataHistorique[tooltip.dataIndex][1]);
+							console.log(tooltip.dataset.label);
+							// .includes('simulation'))
+							// 	return false;
+							// else
+							return new Date(
+								dataHistorique[tooltip.dataIndex][1]
+							).toLocaleDateString('FR-fr');
+						},
 					},
-				}
 				},
 			},
 
@@ -211,7 +216,7 @@ const GestionEtalons = () => {
 				x: {
 					max: 1.0002,
 					min: 0.9998,
-					type:  'linear',
+					type: 'linear',
 					// ticks:
 					// 	domaineChoisi == 'VIDE'
 					// 		? {
@@ -247,7 +252,7 @@ const GestionEtalons = () => {
 				dataChartHistoriqueTempLabel,
 			]);
 		}
-	}, [dataHistorique,typeTC]);
+	}, [dataHistorique, typeTC]);
 	useEffect(() => {
 		if (dataChartHistorique) {
 			console.log(dataChartHistorique);
@@ -324,6 +329,12 @@ const GestionEtalons = () => {
 					precision: Number(modelisationChoisie.precision),
 				});
 
+				console.log('salut ludo');
+				const input = 1e-1;
+				console.log(
+					Math.pow(10, resultat.predict(Math.log10(input))[1])
+				);
+
 				for (const iterator of dataParsedForRegression) {
 					// console.log(iterator);
 					let appareilValue = Math.pow(10, iterator[0]);
@@ -361,7 +372,10 @@ const GestionEtalons = () => {
 					// erreurCumulé +=
 					// 	erreurRelativeEtalonnage * erreurRelativeEtalonnage;
 				}
-			} else if (etalonChoisi.includes('2257')||etalonChoisi.includes('TCK03')) {
+			} else if (
+				etalonChoisi.includes('2257') ||
+				etalonChoisi.includes('TCK03')
+			) {
 				for (let i = 0; i < ptsEtalonnage.appareil.length; i++) {
 					dataParsedForRegression.push([
 						ptsEtalonnage.appareil[i],
@@ -449,6 +463,7 @@ const GestionEtalons = () => {
 				'coupleReferenceIncertitude',
 				coupleReferenceIncertitude
 			);
+			setIncertitudeValue(coupleReferenceIncertitude)
 			let nbrDansEcartType = [];
 			for (let index = 0; index < nbrMesure; index++) {
 				let maxLog = Math.log10(Math.max(...dataForChartTemp[0]));
@@ -590,6 +605,9 @@ const GestionEtalons = () => {
 			ordre: event.target.value,
 		});
 	};
+	const handleBrutToCorrigée = (event) => {
+		setInputBrut(event.target.value);
+	};
 	const handleChangePrecision = (event) => {
 		setModelisationChoisie({
 			...modelisationChoisie,
@@ -613,11 +631,13 @@ const GestionEtalons = () => {
 		console.log(historiqueData);
 		let _dataHistorique = [];
 		historiqueData.forEach((element) => {
-			console.log(element)
+			console.log(element);
 			const coefs = JSON.parse(element.modelisation);
 			_dataHistorique.push([coefs.equation, element.dateEtalonnage]);
 		});
-		_dataHistorique=(_dataHistorique.sort((a,b)=> {return new Date(b[1]).getTime()-new Date(a[1]).getTime()}))
+		_dataHistorique = _dataHistorique.sort((a, b) => {
+			return new Date(b[1]).getTime() - new Date(a[1]).getTime();
+		});
 		setDataHistorique(_dataHistorique);
 	};
 	const handleChangeMax = (event) => {
@@ -638,9 +658,12 @@ const GestionEtalons = () => {
 	const updateModelisation = () => {
 		console.log({ ...resultatModelisation, interpolation: interpolation });
 		const _data = { ...resultatModelisation, interpolation: interpolation };
+		console.log('dataEtalon');
+		console.log(dataEtalon);
 		const dataToExport = {
 			modelisation: JSON.stringify(_data),
 			id: dataEtalon[0].id,
+			// id: dataEtalon.filter(e=>e.typeTc==typeTcChoisi)[0].id,
 		};
 
 		console.log(dataToExport);
@@ -658,6 +681,8 @@ const GestionEtalons = () => {
 				console.log(JSON.stringify(error));
 			});
 	};
+
+	const valeurCorrigée= inputBrut?Math.pow(10,resultatModelisation.predict(Math.log10(inputBrut))[1]).toExponential(2):null
 
 	if (!importation) {
 		return (
@@ -790,6 +815,7 @@ const GestionEtalons = () => {
 							onChange={handleChangeInterpolation}
 						/>
 					</label>
+					<br/>
 					<label>
 						degré de modélisation ? :
 						<input
@@ -799,7 +825,7 @@ const GestionEtalons = () => {
 							min="1"
 						/>
 					</label>
-					<br />
+					{/* <br />
 					<label>
 						nbr de chiffres representatif ? :
 						<input
@@ -808,7 +834,7 @@ const GestionEtalons = () => {
 							onChange={handleChangePrecision}
 							min="1"
 						/>
-					</label>
+					</label> */}
 					<br />
 					<label>
 						nbr d'itérations pour simulation Incertitude ? :
@@ -820,6 +846,8 @@ const GestionEtalons = () => {
 							min="1"
 						/>
 					</label>
+					<br/>
+
 					<label>
 						min-max pour echelle du graphe :
 						<input
@@ -832,6 +860,7 @@ const GestionEtalons = () => {
 							value={echelleChartMax}
 							onChange={handleChangeMax}
 						/>
+						<button onClick={()=>{setEchelleChartMax(null);setEchelleChartMin(null)}}>RAZ</button>
 					</label>
 				</div>
 				{resultatModelisation && resultatModelisation.string}
@@ -853,9 +882,7 @@ const GestionEtalons = () => {
 					onClick={() => updateModelisation()}
 					// onClick={() =>startMyInterval() }
 				>
-					<span role="img" aria-label="books">
-						📚
-					</span>
+
 					Validation de la modelisation?
 				</button>
 				<button
@@ -863,11 +890,47 @@ const GestionEtalons = () => {
 					onClick={() => historique()}
 					// onClick={() =>startMyInterval() }
 				>
-					<span role="img" aria-label="books">
-						📚
-					</span>
+
 					historique
 				</button>
+				<button
+					type="button"
+					onClick={() => window.electron.ipcRenderer.ouvrirRapport(dataEtalon)}
+					// onClick={() =>startMyInterval() }
+				>
+
+					ouvrir rapport
+				</button>
+				<div style={{margin:50}}>
+				<label>Valeur brute </label>
+				<input
+					// type="number"
+					value={inputBrut}
+					onChange={handleBrutToCorrigée}
+					min="1"
+					/>
+				<label> 	mbar</label>
+					<br/>
+				<label>Valeur corrigée </label>
+				<label>{valeurCorrigée}</label>
+				<label> mbar</label>
+					<br/>
+				<label>incertitude associée à k=2 </label>
+				<label>{valeurCorrigée?Math.round(interpoler(valeurCorrigée,incertitudeValue)*10)/10:null}</label>
+				<label> %</label>
+				</div>
+				<br/>
+				<br/>
+					<br/>
+					<br/>
+					<br/>
+					<br/>
+					<br/>
+					<br/>
+					<br/>
+					<br/>
+
+				{console.log(incertitudeValue	)}
 			</div>
 		);
 	} else {
